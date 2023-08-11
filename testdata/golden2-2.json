@@ -1,0 +1,14 @@
+[
+  {
+    "Content": "{\n  \"name\": \"sign-in-with-google-experiment\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"test\": \"echo \\\"Error: no test specified\\\" \u0026\u0026 exit 1\"",
+    "Type": "EQUAL"
+  },
+  {
+    "Content": ",\n    \"start\": \"live-server\"",
+    "Type": "ADD"
+  },
+  {
+    "Content": "\n  },\n  \"keywords\": [],\n  \"author\": \"\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"live-server\": \"^1.2.2\"\n  }\n}\n",
+    "Type": "EQUAL"
+  }
+]

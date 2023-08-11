@@ -97,8 +97,16 @@ func TestChunk(t *testing.T) {
 			"f1df093152800852cf892d4015ff56a56427716b",
 			"cf3bc8ae215607bd18d50c72a48868bc4f2b5e49",
 			"1.txt",
-			"testdata/golden1.json",
-			"testdata/golden2.json",
+			"testdata/golden1-1.json",
+			"testdata/golden1-2.json",
+		},
+		{
+			"https://github.com/richardimaoka/sign-in-with-google-experiment.git",
+			"6c88860799e173a271dd916791f4ec38c6c20abd",
+			"4a2ec0ce7ec9fd4a8bafda822ced46b995824570",
+			"package.json",
+			"testdata/golden2-1.json",
+			"testdata/golden2-2.json",
 		},
 	}
 

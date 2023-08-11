@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
@@ -63,5 +65,5 @@ func DiffsToUnifiedChunks(diffs []diffmatchpatch.Diff) []UnifiedChunk {
 }
 
 func main() {
-
+	fmt.Println("\\")
 }
