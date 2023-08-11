@@ -8,6 +8,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 var storage *memory.Storage
@@ -46,7 +47,41 @@ func gitCommit(repoUrl, commitHashStr string) (*object.Commit, error) {
 	return commit, nil
 }
 
-func TestFileHighlight(t *testing.T) {
+func gitFileFromCommit(repoUrl, commitHashStr, filePath string) (*object.File, error) {
+	commit, err := gitCommit(repoUrl, commitHashStr)
+	if err != nil {
+		return nil, fmt.Errorf("failed in gitFileFromCommit, cannot get commit = %s, %s", commitHashStr, err)
+	}
+
+	rootTree, err := commit.Tree()
+	if err != nil {
+		return nil, fmt.Errorf("failed in gitFileFromCommit, cannot get tree for commit = %s, %s", commitHashStr, err)
+
+	}
+
+	gitFile, err := rootTree.File(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed in gitFileFromCommit, cannot get file = %s in commit = %s, %s", filePath, commitHashStr, err)
+	}
+
+	return gitFile, nil
+}
+
+func gitFileContents(repoUrl, commitHashStr, filePath string) (string, error) {
+	file, err := gitFileFromCommit(repoUrl, commitHashStr, filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed in gitFileContents, cannot get file = %s in commit = %s, %s", filePath, commitHashStr, err)
+	}
+
+	contents, err := file.Contents()
+	if err != nil {
+		return "", fmt.Errorf("failed in gitFileContents, cannot get contents for file = %s in commit = %s, %s", filePath, commitHashStr, err)
+	}
+
+	return contents, nil
+}
+
+func TestChunk(t *testing.T) {
 	repoCache = make(map[string]*git.Repository)
 
 	cases := []struct {
@@ -54,7 +89,8 @@ func TestFileHighlight(t *testing.T) {
 		prevCommit    string
 		currentCommit string
 		filePath      string
-		goldenFile    string
+		goldenFile1   string
+		goldenFile2   string
 	}{
 		{
 			"https://github.com/richardimaoka/file-highlight-test.git",
@@ -62,30 +98,47 @@ func TestFileHighlight(t *testing.T) {
 			"cf3bc8ae215607bd18d50c72a48868bc4f2b5e49",
 			"1.txt",
 			"testdata/golden1.json",
+			"testdata/golden2.json",
 		},
 	}
 
 	for _, c := range cases {
 		prevCommit, err := gitCommit(c.repoUrl, c.prevCommit)
 		if err != nil {
-			t.Fatalf("failed in TestFileHighlight to get prev commit, %s", err)
+			t.Fatalf("failed in TestChunk to get prev commit, %s", err)
 		}
 
 		currentCommit, err := gitCommit(c.repoUrl, c.currentCommit)
 		if err != nil {
-			t.Fatalf("failed in TestFileHighlight to get current commit, %s", err)
+			t.Fatalf("failed in TestChunk to get current commit, %s", err)
 		}
 
+		// 1. testing git go-git diff
 		patch, _ := prevCommit.Patch(currentCommit)
 		filePatches := patch.FilePatches()
 		for _, p := range filePatches {
 			_, to := p.Files()
 			if to.Path() == c.filePath {
 				chunks := p.Chunks()
-				unifiedChunks := ToUnifiedChunk(chunks)
+				unifiedChunks := ChunksToUnifiedChunks(chunks)
+				CompareWitGoldenFile(t, *updateFlag, c.goldenFile1, unifiedChunks)
 
-				CompareWitGoldenFile(t, *updateFlag, c.goldenFile, unifiedChunks)
 			}
 		}
+
+		// 2. testing diff-match-patch
+		prevContents, err := gitFileContents(c.repoUrl, c.prevCommit, c.filePath)
+		if err != nil {
+			t.Fatalf("failed in TestChunk to get prev file contents, %s", err)
+		}
+		currentContents, err := gitFileContents(c.repoUrl, c.currentCommit, c.filePath)
+		if err != nil {
+			t.Fatalf("failed in TestChunk to get current file contents, %s", err)
+		}
+
+		dmp := diffmatchpatch.New()
+		diffs := dmp.DiffMain(prevContents, currentContents, true)
+		unifiedChunks := DiffsToUnifiedChunks(diffs)
+		CompareWitGoldenFile(t, *updateFlag, c.goldenFile2, unifiedChunks)
 	}
 }
