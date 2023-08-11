@@ -54,12 +54,14 @@ func TestFileHighlight(t *testing.T) {
 		prevCommit    string
 		currentCommit string
 		filePath      string
+		goldenFile    string
 	}{
 		{
 			"https://github.com/richardimaoka/file-highlight-test.git",
 			"f1df093152800852cf892d4015ff56a56427716b",
 			"cf3bc8ae215607bd18d50c72a48868bc4f2b5e49",
 			"1.txt",
+			"testdata/golden1.json",
 		},
 	}
 
@@ -81,7 +83,8 @@ func TestFileHighlight(t *testing.T) {
 			if to.Path() == c.filePath {
 				chunks := p.Chunks()
 				unifiedChunks := ToUnifiedChunk(chunks)
-				fmt.Println("unifiedChunks:", unifiedChunks)
+
+				CompareWitGoldenFile(t, *updateFlag, c.goldenFile, unifiedChunks)
 			}
 		}
 	}
