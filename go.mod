@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/go-git/go-git/v5 v5.8.1
+	github.com/google/go-cmp v0.5.9
 	github.com/sergi/go-diff v1.3.1
 )
 
