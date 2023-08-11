@@ -108,6 +108,14 @@ func TestChunk(t *testing.T) {
 			"testdata/golden2-1.json",
 			"testdata/golden2-2.json",
 		},
+		{
+			"https://github.com/richardimaoka/sign-in-with-google-experiment.git",
+			"a60b11b2d038bb47daf305ef89d2d19f1e1cbc90",
+			"5d0cc4b461623706507b527366beece48fe5e68c",
+			"index.html",
+			"testdata/golden3-1.json",
+			"testdata/golden3-2.json",
+		},
 	}
 
 	for _, c := range cases {
