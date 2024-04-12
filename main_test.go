@@ -11,7 +11,7 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
-var storage *memory.Storage
+// var storage *memory.Storage
 var repoCache map[string]*git.Repository
 
 func gitOpenOrClone(repoUrl string) (*git.Repository, error) {
