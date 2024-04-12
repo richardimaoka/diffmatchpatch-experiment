@@ -65,5 +65,6 @@ func DiffsToUnifiedChunks(diffs []diffmatchpatch.Diff) []UnifiedChunk {
 }
 
 func main() {
+	experiment()
 	fmt.Println("\\")
 }

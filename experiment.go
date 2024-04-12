@@ -8,16 +8,14 @@ import (
 )
 
 const (
-	text1 = `1111
-2222
-3333
-4444
-5555`
-	text2 = `1111
-222222
-333333
-4444
-5555555`
+	text1 = `I am the very model of a modern Major-General,
+I've information vegetable, animal, and mineral,
+I know the kings of England, and I quote the fights historical,
+From Marathon to Waterloo, in order categorical.`
+	text2 = `I am the very model of a cartoon individual,
+My animation's comical, animal, and whimsical,
+I'm quite adept at funny gags, comedic theory I have read,
+From wicked puns and stupid jokes to anvils that drop on your head.`
 )
 
 func experiment() {
